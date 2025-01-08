@@ -75,14 +75,19 @@ $config = [
             ],
         ],
         'db' => $db,
-        /*
+
         'urlManager' => [
             'enablePrettyUrl' => true,
+            'enableStrictParsing' => true,
             'showScriptName' => false,
+
             'rules' => [
+                'GET /' => 'site/index',
+                'GET /index' => 'site/index',
+                'GET /about' => 'site/about',
             ],
         ],
-        */
+
     ],
     'params' => $params,
 ];
