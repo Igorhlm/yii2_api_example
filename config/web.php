@@ -1,27 +1,60 @@
 <?php
 
+declare(strict_types=1);
+
+use yii\web\Request;
+use yii\web\Response;
+
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 
 $config = [
-    'id' => 'basic',
+    'id' => 'yii2-api-example',
+    'name' => 'Yii2-API-Example',
+
     'basePath' => dirname(__DIR__),
-    'bootstrap' => ['log'],
+    'bootstrap' => ['log', 'debug'],
+    'language' => 'ru-RU',
+
+    'modules' => [
+        'debug' => [
+            'class' => 'yii\\debug\\Module',
+            'panels' => [
+                'httpclient' => [
+                    'class' => 'yii\\httpclient\\debug\\HttpClientPanel',
+                ],
+            ],
+        ],
+        'api' => [
+            'class' => Api::class,
+        ],
+    ],
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
     ],
     'components' => [
         'request' => [
-            // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
-            'cookieValidationKey' => 'd4yIGC22ZVhjQ5Iep_05DehK2s58bULq',
+            'class' => Request::class,
+            'enableCookieValidation' => false,
+            'enableCsrfValidation' => false,
+            'parsers' => [
+                'application/json' => 'yii\web\JsonParser',
+            ],
+        ],
+
+        'response' => [
+            'class' => Response::class,
+            'format' => Response::FORMAT_JSON,
+            'charset' => 'UTF-8',
         ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
         'user' => [
             'identityClass' => 'app\models\User',
-            'enableAutoLogin' => true,
+            'enableAutoLogin' => false,
+            'enableSession' => false,
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
