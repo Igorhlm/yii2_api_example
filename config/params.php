@@ -1,7 +1,10 @@
 <?php
 
 return [
-    'adminEmail' => 'admin@example.com',
-    'senderEmail' => 'noreply@example.com',
-    'senderName' => 'Example.com mailer',
+    'adminEmail' => 'iagmail@mail.ru',
+    'senderEmail' => 'iagmail@mail.ru',
+    'senderName' => 'mailer',
+
+    // Количество отдаваемых элементов по умолчанию
+    'limit' => 3,
 ];
