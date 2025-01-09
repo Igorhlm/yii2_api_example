@@ -58,7 +58,7 @@ $config = [
         ],
 
         'user' => [
-            'identityClass' => 'app\models\User',
+            'identityClass' => 'app\modules\api\modules\v1\models\User',
             'enableAutoLogin' => false,
             'enableSession' => false,
         ],
@@ -102,6 +102,10 @@ $config = [
                 'DELETE api/v1/book/<id:\d+>' => 'api/v1/book/delete',
                 'PUT api/v1/book/<id:\d+>' => 'api/v1/book/update',
                 'PATCH api/v1/book/<id:\d+>' => 'api/v1/book/update-part',
+
+                'POST api/v1/auth/login' => 'api/v1/auth/login',
+                'POST api/v1/auth/refresh-tokens' => 'api/v1/auth/refresh-tokens',
+                'PATCH api/v1/auth/logout' => 'api/v1/auth/logout',
             ],
         ],
     ],

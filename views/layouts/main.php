@@ -41,7 +41,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
         'items' => [
             ['label' => 'Home', 'url' => ['/index']],
             ['label' => 'About', 'url' => ['/about']],
-            ['label' => 'Login', 'url' => ['/site/login']]
+            ['label' => 'Login', 'url' => ['/docs/index.html#/Auth/login']]
         ]
     ]);
     NavBar::end();

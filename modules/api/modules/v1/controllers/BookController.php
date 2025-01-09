@@ -18,6 +18,13 @@ use app\modules\api\modules\v1\models\Book;
 class BookController extends ApiController
 {
     /**
+     * Actions, для которых необходимо исключить проверку access токена
+     *
+     * @var array $exceptActions
+     */
+    public array $exceptActions = [];
+
+    /**
      * @var string $modelClass
      */
     public $modelClass = 'app\modules\api\modules\v1\models\Book';
