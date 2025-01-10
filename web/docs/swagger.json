@@ -1,0 +1,873 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Books API",
+        "description": "Пример простого REST API",
+        "contact": {
+            "email": "iagmail@mail.ru"
+        },
+        "version": "1.0"
+    },
+    "servers": [
+        {
+            "url": "/",
+            "description": "Swagger Yii2 API Example (built in) - пример простого API"
+        }
+    ],
+    "paths": {
+        "/api/v1/auth/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Вход пользователя",
+                "description": "Вход пользователя",
+                "operationId": "login",
+                "requestBody": {
+                    "description": "Вход пользователя.<br/>\n     *                      Для входа использовать: admin/admin<br/>\n     *                      см. также Insomnia, тот же метод (после импорта данных)<br/>\n     *                      Изменить время жизни access токена см. config/params.php, параметр accessTokenTime,<br/>\n     *                      (также TTL refresh токена - параметр refreshTokenTime, там же)",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "username",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "username": {
+                                        "description": "Имя пользователя"
+                                    },
+                                    "password": {
+                                        "description": "Пароль"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Вход - успешно",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "description": "Токены",
+                                    "properties": {
+                                        "accessToken": {
+                                            "description": "Access токен",
+                                            "type": "string"
+                                        },
+                                        "refreshToken": {
+                                            "description": "Refresh токен",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Пользователь не прошел аутентификацию",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Exception"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Пользователь не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Exception"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Ошибки валидации данных",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Error"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "JWTAuthentification": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/auth/refresh-tokens": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Обновление токенов",
+                "description": "Обновление токенов",
+                "operationId": "refresh",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "refreshToken"
+                                ],
+                                "properties": {
+                                    "refreshToken": {
+                                        "description": "Refresh токен",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Токены обновлены",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "accessToken": {
+                                            "type": "string"
+                                        },
+                                        "refreshToken": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Токен отсутствует или не найден на сервере",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Exception"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Время жизни токена истекло",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Exception"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Пользователь (или токен) не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Exception"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "JWTAuthentification": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/auth/logout": {
+            "patch": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Выход пользователя",
+                "description": "Выход пользователя",
+                "operationId": "logout",
+                "responses": {
+                    "200": {
+                        "description": "Выход - успешно"
+                    },
+                    "400": {
+                        "description": "Токен отсутствует или структура токена некорректна",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Exception"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Время жизни токена истекло",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Exception"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "JWTAuthentification": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/book": {
+            "get": {
+                "tags": [
+                    "Books"
+                ],
+                "summary": "Список книг",
+                "description": "Получение списка книг",
+                "operationId": "listBooks",
+                "parameters": [
+                    {
+                        "name": "expand",
+                        "in": "query",
+                        "description": "Дополнительные данные: createdAt, updatedAt"
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Ограничение количества выводимых записей"
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "''Сдвиг'' выборки от начала"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Список книг",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "properties": {
+                                                "items": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/Book"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Токен отсутствует или структура токена некорректна",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Exception"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Время жизни токена истекло",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Exception"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "JWTAuthentification": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Books"
+                ],
+                "summary": "Добавление новой книги",
+                "description": "Добавление новой книги",
+                "operationId": "addBook",
+                "requestBody": {
+                    "description": "Добавление новой книги",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "author",
+                                    "year"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "description": "Наименование"
+                                    },
+                                    "author": {
+                                        "description": "Автор(ы)"
+                                    },
+                                    "year": {
+                                        "description": "Год издания"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Книга добавлена"
+                    },
+                    "400": {
+                        "description": "Токен отсутствует или структура токена некорректна",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Exception"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Время жизни токена истекло",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Exception"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Ошибки валидации данных",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Error"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "JWTAuthentification": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/book/{id}": {
+            "get": {
+                "tags": [
+                    "Books"
+                ],
+                "summary": "Получение данных отдельно взятой книги",
+                "description": "Получение данных отдельно взятой книги",
+                "operationId": "getBook",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id книги, данные которой необходимо получить",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    },
+                    {
+                        "name": "expand",
+                        "in": "query",
+                        "description": "Дополнительные данные"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ответ при выводе указанного элемента",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Book"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Токен отсутствует или структура токена некорректна",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Exception"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Время жизни токена истекло",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Exception"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Книга не найдена",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Exception"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "JWTAuthentification": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Books"
+                ],
+                "summary": "Изменение данных отдельно взятой книги",
+                "description": "Изменение данных отдельно взятой книги",
+                "operationId": "updateBook",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id книги, данные которой необходимо изменить",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Изменение данных отдельно взятой книги (все поля)",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "author",
+                                    "year"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "description": "Наименование"
+                                    },
+                                    "author": {
+                                        "description": "Автор(ы)"
+                                    },
+                                    "year": {
+                                        "description": "Год издания"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "description": "Данные обновлены",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Book"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Токен отсутствует или структура токена некорректна",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Exception"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Время жизни токена истекло",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Exception"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Книга не найдена",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Exception"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Ошибки валидации данных",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Error"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "JWTAuthentification": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Books"
+                ],
+                "summary": "Удаление книги",
+                "description": "Удаление книги",
+                "operationId": "deleteBook",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id удаляемой книги",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Книга успешно удалена"
+                    },
+                    "400": {
+                        "description": "Токен отсутствует или структура токена некорректна",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Exception"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Время жизни токена истекло",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Exception"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Книга не найдена",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Exception"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "JWTAuthentification": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Books"
+                ],
+                "summary": "Изменение данных отдельно взятой книги (отдельные поля)",
+                "description": "Изменение данных отдельно взятой книги (отдельные поля)",
+                "operationId": "updateBookPart",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id книги, данные которой необходимо изменить",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Изменение данных отдельно взятой книги",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "description": "Наименование"
+                                    },
+                                    "author": {
+                                        "description": "Автор(ы)"
+                                    },
+                                    "year": {
+                                        "description": "Год издания"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Данные обновлены",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Book"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Токен отсутствует или структура токена некорректна",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Exception"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Время жизни токена истекло",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Exception"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Книга не найдена",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Exception"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Ошибки валидации данных",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Error"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "JWTAuthentification": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Meta": {
+                "title": "Meta",
+                "description": "Мета-данные постраничной выдачи",
+                "properties": {
+                    "meta": {
+                        "description": "Мета-данные постраничной выдачи",
+                        "properties": {
+                            "total": {
+                                "description": "Общее количество",
+                                "type": "integer"
+                            },
+                            "offset": {
+                                "description": "''Сдвиг'' выборки от начала",
+                                "type": "integer"
+                            },
+                            "limit": {
+                                "description": "Ограничение количества выводимых записей",
+                                "type": "integer"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "Exception": {
+                "title": "Exception",
+                "description": "Данные при возникновении исключения",
+                "properties": {
+                    "name": {
+                        "description": "Наименование исключения",
+                        "type": "string"
+                    },
+                    "message": {
+                        "description": "Текст ошибки",
+                        "type": "string"
+                    },
+                    "code": {
+                        "description": "Код",
+                        "type": "integer",
+                        "enum": [
+                            10,
+                            20,
+                            30,
+                            40,
+                            50,
+                            60,
+                            70
+                        ]
+                    },
+                    "status": {
+                        "description": "HTTP статус",
+                        "type": "integer"
+                    },
+                    "type": {
+                        "description": "Тип исключения",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "Error": {
+                "properties": {
+                    "field": {
+                        "description": "Поле",
+                        "type": "string"
+                    },
+                    "message": {
+                        "description": "Текст ошибки",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "Book": {
+                "title": "Book model",
+                "description": "Book model",
+                "required": [
+                    "title",
+                    "author",
+                    "year"
+                ],
+                "properties": {
+                    "id": {
+                        "title": "id",
+                        "description": "id",
+                        "format": "int64"
+                    },
+                    "title": {
+                        "title": "title",
+                        "description": "Наименование",
+                        "format": "string"
+                    },
+                    "author": {
+                        "title": "author",
+                        "description": "Автор(ы)",
+                        "format": "string"
+                    },
+                    "year": {
+                        "title": "year",
+                        "description": "Год издания",
+                        "format": "int32"
+                    },
+                    "createdAt": {
+                        "title": "Создано",
+                        "description": "Timestamp внесения данных",
+                        "format": "datetime"
+                    },
+                    "updatedAt": {
+                        "title": "Изменено",
+                        "description": "Timestamp изменения данных",
+                        "format": "datetime"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "JWTAuthentification": {
+                "type": "http",
+                "description": "Authentification by JWT token",
+                "name": "JWT",
+                "in": "header",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Authentication",
+            "description": "Authentication"
+        },
+        {
+            "name": "Books",
+            "description": "Books"
+        }
+    ],
+    "externalDocs": {
+        "description": "Спецификация OpenAPI (v3.0, русская)",
+        "url": "https://spec.openapis.org/oas/v3.0.0.html"
+    }
+}

@@ -7,9 +7,52 @@ namespace app\modules\api\modules\v1\models;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
+use OpenApi\Annotations as OA;
 
 /**
- * Класс Book для таблицы книг books
+ * Класс Book для таблицы книг book
+ *
+ * @OA\Schema(
+ *     description="Book model",
+ *     title="Book model",
+ *     required={"title", "author", "year"},
+ *     @OA\Property(
+ *         property="id",
+ *         title="id",
+ *         format="int64",
+ *         description="id",
+ *     ),
+ *     @OA\Property(
+ *         property="title",
+ *         title="title",
+ *         format="string",
+ *         description="Наименование",
+ *     ),
+ *     @OA\Property(
+ *         property="author",
+ *         title="author",
+ *         format="string",
+ *         description="Автор(ы)",
+ *     ),
+ *     @OA\Property(
+ *         property="year",
+ *         title="year",
+ *         format="int32",
+ *         description="Год издания",
+ *     ),
+ *     @OA\Property(
+ *         property="createdAt",
+ *         title="Создано",
+ *         format="datetime",
+ *         description="Timestamp внесения данных",
+ *     ),
+ *     @OA\Property(
+ *         property="updatedAt",
+ *         title="Изменено",
+ *         format="datetime",
+ *         description="Timestamp изменения данных",
+ *     )
+ * )
  *
  * @property int $id
  * @property string $title Наименование

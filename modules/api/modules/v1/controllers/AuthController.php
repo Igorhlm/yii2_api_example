@@ -8,6 +8,7 @@ use Yii;
 use yii\web\NotFoundHttpException;
 use yii\web\UnauthorizedHttpException;
 use yii\web\BadRequestHttpException;
+use OpenApi\Annotations as OA;
 
 use app\modules\api\modules\v1\models\RefreshToken;
 use app\modules\api\modules\v1\models\User;
@@ -31,6 +32,85 @@ class AuthController extends ApiController
 
     /**
      * Вход пользователя (аутентификация)
+     *
+     * @OA\Post(
+     *     path="/api/v1/auth/login",
+     *     tags={"Authentication"},
+     *     operationId="login",
+     *     summary="Вход пользователя",
+     *     description="Вход пользователя",
+     *     security={{ "JWTAuthentification": {} }},
+     *     @OA\RequestBody(
+     *         description="Вход пользователя.<br/>
+     *                      Для входа использовать: admin/admin<br/>
+     *                      см. также Insomnia, тот же метод (после импорта данных)<br/>
+     *                      Изменить время жизни access токена см. config/params.php, параметр accessTokenTime,<br/>
+     *                      (также TTL refresh токена - параметр refreshTokenTime, там же)",
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 required={"username", "password"},
+     *                 @OA\Property(
+     *                     property="username",
+     *                     description="Имя пользователя",
+     *                     @OA\Schema(
+     *                         type="string",
+     *                     )
+     *                 ),
+     *                 @OA\Property(
+     *                     property="password",
+     *                     description="Пароль",
+     *                     @OA\Schema(
+     *                         type="string",
+     *                     )
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Вход - успешно",
+     *         @OA\MediaType(
+     *             mediaType="application/json",*
+     *             @OA\Schema(
+     *                 description="Токены",
+     *                 @OA\Property(
+     *                     property="accessToken",
+     *                     type="string",
+     *                     description="Access токен",
+     *                 ),
+     *                 @OA\Property(
+     *                     property="refreshToken",
+     *                     type="string",
+     *                     description="Refresh токен",
+     *                 ),
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Пользователь не прошел аутентификацию",
+     *         @OA\JsonContent(
+     *             ref="#/components/schemas/Exception"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Пользователь не найден",
+     *         @OA\JsonContent(
+     *             ref="#/components/schemas/Exception"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Ошибки валидации данных",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/Error")
+     *         ),
+     *     ),
+     * )
      *
      * @return LoginForm|array
      * @thows NotFoundHttpException
@@ -61,6 +141,64 @@ class AuthController extends ApiController
     /**
      * Обновление токенов
      *
+     * @OA\Post(
+     *     path="/api/v1/auth/refresh-tokens",
+     *     tags={"Authentication"},
+     *     operationId="refresh",
+     *     summary="Обновление токенов",
+     *     description="Обновление токенов",
+     *     security={{ "JWTAuthentification": {} }},
+     *     @OA\RequestBody(
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 required={"refreshToken"},
+     *                 @OA\Property(
+     *                     property="refreshToken",
+     *                     description="Refresh токен",
+     *                     type="string"
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Токены обновлены",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="accessToken",
+     *                 type="string"
+     *             ),
+     *             @OA\Property(
+     *                 property="refreshToken",
+     *                 type="string"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Токен отсутствует или не найден на сервере",
+     *         @OA\JsonContent(
+     *             ref="#/components/schemas/Exception"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Время жизни токена истекло",
+     *         @OA\JsonContent(
+     *             ref="#/components/schemas/Exception"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Пользователь (или токен) не найден",
+     *         @OA\JsonContent(
+     *             ref="#/components/schemas/Exception"
+     *         )
+     *     ),
+     * )
+     *
      * @return array
      * @throws UnauthorizedHttpException
      * @throws NotFoundHttpException
@@ -79,6 +217,33 @@ class AuthController extends ApiController
 
     /**
      * Выход пользователя
+     *
+     * @OA\Patch(
+     *     path="/api/v1/auth/logout",
+     *     tags={"Authentication"},
+     *     operationId="logout",
+     *     summary="Выход пользователя",
+     *     description="Выход пользователя",
+     *     security={{ "JWTAuthentification": {} }},*
+     *     @OA\Response(
+     *          response=200,
+     *          description="Выход - успешно"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Токен отсутствует или структура токена некорректна",
+     *         @OA\JsonContent(
+     *             ref="#/components/schemas/Exception"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Время жизни токена истекло",
+     *         @OA\JsonContent(
+     *             ref="#/components/schemas/Exception"
+     *         )
+     *     ),
+     * )
      *
      * @return void
      * @throws BadRequestHttpException

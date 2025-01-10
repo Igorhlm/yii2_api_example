@@ -36,6 +36,8 @@ class JwtAuth
 
     const CODE_BOOK_NOT_FOUND = 70;
 
+    private const PREFIX = 'Bearer ';
+
     /**
      * Массив сообщений, соответствующих кодам
      *
@@ -75,6 +77,7 @@ class JwtAuth
             'exp' => $expireAccessToken,
         ];
         $accessToken = JWT::encode($payload, Yii::$app->params['jwtSecret'], self::HS256);
+        $accessToken = self::PREFIX.$accessToken;
 
         return $accessToken;
     }
@@ -207,7 +210,7 @@ class JwtAuth
                 self::CODE_USER_INACTIVE
             );
         } elseif (!$user->refreshToken) {
-            throw new UnauthorizedHttpException('Необходимо выполнить вход или обновить токены');
+            throw new UnauthorizedHttpException('Необходимо выполнить вход');
         }
 
         return $claims;
