@@ -34,7 +34,9 @@
         "codeception/module-filesystem": "^3.0 || ^2.0 || ^1.1",
         "codeception/verify": "^3.0 || ^2.2",
         "doctrine/annotations": "^2.0",
-        "zircote/swagger-php": "4.11"
+        "zircote/swagger-php": "4.11",
+        "codeception/module-rest": "dev-master",
+        "codeception/module-phpbrowser": "dev-master"
     },
     "config": {
         "allow-plugins": {

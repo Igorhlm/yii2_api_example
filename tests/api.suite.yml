@@ -1,0 +1,11 @@
+actor: ApiTester
+suite_namespace: \api
+modules:
+    enabled:
+        - REST:
+            depends: PhpBrowser
+            url: http://localhost:8080/index-test.php
+            part: json
+        - Yii2:
+            part: [orm, fixtures]
+            entryScript: index-test.php

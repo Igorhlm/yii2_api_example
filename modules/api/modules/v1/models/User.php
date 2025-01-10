@@ -86,6 +86,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
 
     /**
      * {@inheritdoc}
+     *
      * @return User|null
      */
     public static function findIdentity($id): ?User
