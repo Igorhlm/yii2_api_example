@@ -1,0 +1,21 @@
+[mysqld]
+skip-host-cache
+skip-name-resolve
+max_allowed_packet              = 256M
+max_connect_errors              = 1000000
+default_storage_engine          = InnoDB
+innodb_buffer_pool_instances    = 8 # Use 1 instance per 1GB of InnoDB pool size
+innodb_buffer_pool_size         = 8G # Use up to 70-80% of RAM
+innodb_file_per_table           = 1
+innodb_flush_log_at_trx_commit  = 0
+innodb_flush_method             = O_DIRECT
+innodb_log_buffer_size          = 16M
+innodb_log_file_size            = 1G
+innodb_stats_on_metadata        = 0
+max_connections                 = 1000
+max_execution_time              = 30000
+innodb_sort_buffer_size         = 2M
+join_buffer_size                = 4M
+read_buffer_size                = 3M
+read_rnd_buffer_size            = 4M
+sort_buffer_size                = 4M

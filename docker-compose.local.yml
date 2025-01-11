@@ -1,0 +1,43 @@
+services:
+  php_fpm:
+    container_name: php_fpm-${PROJECT_NAME}
+    build:
+      context: docker
+      dockerfile: ${ENV_DIR}/php-fpm/Dockerfile_php_fpm
+    volumes:
+      - '${PROJECT_DIR}:/var/www'
+      - '${PROJECT_DIR}/docker/${ENV_DIR}/php-fpm/php.ini:/usr/local/etc/php/php.ini'
+      - '${PROJECT_DIR}/docker/${ENV_DIR}/php-fpm/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini'
+      - '${PROJECT_DIR}/docker/${ENV_DIR}/php-fpm/www.conf:/usr/local/etc/php-fpm.d/www.conf'
+    networks:
+      - default
+      
+  nginx:
+    container_name: nginx-${PROJECT_NAME}
+    build:
+      context: docker
+      dockerfile: ${ENV_DIR}/nginx/Dockerfile_nginx
+    ports:
+      - 8888:80
+    volumes:
+      - '${PROJECT_DIR}:/var/www'
+      - '${PROJECT_DIR}/docker/${ENV_DIR}/nginx/conf.d:/etc/nginx/conf.d'
+    depends_on:
+      - php_fpm
+    networks:
+      - default
+
+  db:
+    image: mariadb
+    container_name: db-${PROJECT_NAME}
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - 3366:3306
+    volumes:
+      - ./data/db:/var/lib/mysql/:delegated
+    networks:
+      - default

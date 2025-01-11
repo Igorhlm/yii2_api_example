@@ -11,7 +11,7 @@
     "servers": [
         {
             "url": "/",
-            "description": "Swagger Yii2 API Example (built in) - пример простого API"
+            "description": "Swagger Yii2 API Example - пример простого API"
         }
     ],
     "paths": {

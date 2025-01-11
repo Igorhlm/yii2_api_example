@@ -13,9 +13,9 @@ return [
     // TTL access токена (в секундах)
     'accessTokenTime' => 60*2,
 
-    # TTL refresh токена (месяцы)
+    // TTL refresh токена (месяцы)
     'refreshTokenTime' => 1,
 
-    # Формат дата\время (БД)
+    // Формат дата\время (БД)
     'DATETIME_FORMAT' => 'Y-m-d H:i:s',
 ];

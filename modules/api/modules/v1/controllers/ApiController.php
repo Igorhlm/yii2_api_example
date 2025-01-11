@@ -23,7 +23,7 @@ use app\modules\api\modules\v1\components\SerializerExample;
  * ),
  *
  * @OA\Server(
- *     description="Swagger Yii2 API Example (built in) - пример простого API",
+ *     description="Swagger Yii2 API Example - пример простого API",
  *     url="/",
  * ),
  *

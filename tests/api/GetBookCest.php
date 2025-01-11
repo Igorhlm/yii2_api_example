@@ -4,7 +4,6 @@ namespace tests\api;
 
 use \ApiTester;
 use tests\fixtures\BookFixture;
-//use app\tests\models\TestUser;
 
 class GetBookCest
 {
