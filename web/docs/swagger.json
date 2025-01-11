@@ -51,18 +51,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "description": "Токены",
-                                    "properties": {
-                                        "accessToken": {
-                                            "description": "Access токен",
-                                            "type": "string"
-                                        },
-                                        "refreshToken": {
-                                            "description": "Refresh токен",
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/Tokens"
                                 }
                             }
                         }
@@ -136,19 +125,11 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Токены обновлены",
+                        "description": "Токены",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "properties": {
-                                        "accessToken": {
-                                            "type": "string"
-                                        },
-                                        "refreshToken": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/Tokens"
                                 }
                             }
                         }
@@ -728,6 +709,33 @@
     },
     "components": {
         "schemas": {
+            "Tokens": {
+                "properties": {
+                    "accessToken": {
+                        "description": "Class ApiController - базовый класс этого API",
+                        "type": "string"
+                    },
+                    "refreshToken": {
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            },
+                            "user_id": {
+                                "type": "integer"
+                            },
+                            "refresh_token": {
+                                "type": "string"
+                            },
+                            "created_at": {
+                                "type": "string",
+                                "format": "date-time"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
             "Meta": {
                 "title": "Meta",
                 "description": "Мета-данные постраничной выдачи",

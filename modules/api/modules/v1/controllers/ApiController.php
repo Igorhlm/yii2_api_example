@@ -43,6 +43,34 @@ use app\modules\api\modules\v1\components\SerializerExample;
  * ),
  *
  * @OA\Schema(
+ *     schema="Tokens",
+ *     @OA\Property(
+ *         property="accessToken",
+ *         type="string"
+ *     ),
+ *     @OA\Property(
+ *         property="refreshToken",
+ *         type="object",
+ *         @OA\Property(
+ *             property="id",
+ *             type="int"
+ *         ),
+ *         @OA\Property(
+ *             property="user_id",
+ *             type="int"
+ *         ),
+ *         @OA\Property(
+ *             property="refresh_token",
+ *             type="string"
+ *         ),
+ *         @OA\Property(
+ *             property="created_at",
+ *             type="datetime"
+ *         ),
+ *     )
+ * ),
+ *
+ * @OA\Schema(
  *     schema="Meta",
  *     title="Meta",
  *     description="Мета-данные постраничной выдачи",

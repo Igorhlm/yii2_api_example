@@ -71,21 +71,8 @@ class AuthController extends ApiController
      *     @OA\Response(
      *         response=201,
      *         description="Вход - успешно",
-     *         @OA\MediaType(
-     *             mediaType="application/json",*
-     *             @OA\Schema(
-     *                 description="Токены",
-     *                 @OA\Property(
-     *                     property="accessToken",
-     *                     type="string",
-     *                     description="Access токен",
-     *                 ),
-     *                 @OA\Property(
-     *                     property="refreshToken",
-     *                     type="string",
-     *                     description="Refresh токен",
-     *                 ),
-     *             )
+     *         @OA\JsonContent(
+     *             ref="#/components/schemas/Tokens"
      *         )
      *     ),
      *     @OA\Response(
@@ -164,16 +151,9 @@ class AuthController extends ApiController
      *     ),
      *     @OA\Response(
      *         response=201,
-     *         description="Токены обновлены",
+     *         description="Токены",
      *         @OA\JsonContent(
-     *             @OA\Property(
-     *                 property="accessToken",
-     *                 type="string"
-     *             ),
-     *             @OA\Property(
-     *                 property="refreshToken",
-     *                 type="string"
-     *             )
+     *             ref="#/components/schemas/Tokens"
      *         )
      *     ),
      *     @OA\Response(
