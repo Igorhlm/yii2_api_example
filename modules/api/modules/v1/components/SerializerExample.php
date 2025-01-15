@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace app\modules\api\modules\v1\components;
 
-use app\modules\api\modules\v1\components\PaginationExample;
 use yii\data\DataProviderInterface;
+
+use app\modules\api\modules\v1\components\PaginationExample;
 
 /**
  * Класс сериализации
@@ -20,17 +21,21 @@ class SerializerExample extends \yii\rest\Serializer
     /**
      * @var string
      */
+    public $metaEnvelope = 'meta';
+
+    /**
+     * @var string
+     */
     public $totalCountHeader = 'X-Pagination-Total';
 
     /**
      * @var string
      */
-
     public $offsetHeader = 'X-Pagination-Offset';
+
     /**
      * @var string
      */
-
     public $limitHeader = 'X-Pagination-Limit';
 
     /**
@@ -70,7 +75,7 @@ class SerializerExample extends \yii\rest\Serializer
     protected function serializePagination($pagination)
     {
         return [
-            'meta' => [
+            $this->metaEnvelope => [
                 'total' => $pagination->totalCount,
                 'offset' => $pagination->getOffset(),
                 'limit' => $pagination->getLimit(),
